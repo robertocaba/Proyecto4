@@ -7,7 +7,9 @@ const CommentSchema = new mongoose.Schema({
         type: ObjectId,
         ref: 'User'
     },
-    deliveryDate: Date
+    deliveryDate: Date,
+    postIds:[{
+        _id:{type: ObjectId, ref: "Post"},},],
 }, { timestamps: true });
 
 const Comment = mongoose.model('Comment', CommentSchema);

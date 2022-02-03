@@ -9,6 +9,6 @@ router.delete('/:_id',authentication,PostController.delete)
 router.get('/id/:_id',PostController.getById)
 router.get('/id/:name',PostController.getPostByName)
 router.get('/',PostController.getAll)
-
+router.put('/reviews/:_id', authentication, PostController.insertComment)
 
 module.exports = router;

@@ -11,5 +11,6 @@ router.get('/id/:_id',UserController.getById)
 router.get('/name/:name',UserController.getUserByName)
 router.delete('/:_id',UserController.delete)
 router.put('/:_id', UserController.update)
+router.get('/info',authentication, UserController.getInfo)
 
 module.exports = router;

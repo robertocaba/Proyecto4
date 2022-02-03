@@ -13,7 +13,11 @@ const PostController ={
     },
     async getAll(req, res) {
         try {
+           const { page = 1, limit = 10 } = req.query; 
            const posts = await Post.find()
+            .populate("reviews.userId")
+            .limit(limit * 1)
+            .skip((page - 1) * limit); 
            res.send(posts)
         } catch (error) {
             console.error(error);
@@ -58,9 +62,19 @@ const PostController ={
           console.error(error);
         }
       },
-    
-
-    
+    async insertComment(req, res) {
+        try {
+          const post = await Post.findByIdAndUpdate(
+            req.params._id,
+            { $push: { reviews: { ...req.body, userId: req.user._id } } },
+            { new: true }
+          );
+          res.send(post);
+        } catch (error) {
+          console.error(error);
+          res.status(500).send({ message: "There was a problem with your review" });
+        }
+      },
 
 }
 

@@ -8,6 +8,7 @@ const CommentController = {
                 deliveryDate: new Date(),
                 userId: req.user._id
             })
+            await User.findByIdAndUpdate(req.user._id, { $push: { commentIds: comment._id } }) 
             res.status(201).send(comment)
         } catch (error) {
             console.error(error);
