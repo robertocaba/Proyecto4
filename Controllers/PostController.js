@@ -75,6 +75,20 @@ const PostController ={
           res.status(500).send({ message: "There was a problem with your review" });
         }
       },
+      async getAll(req, res) {
+        try {
+          const { page = 1, limit = 10 } = req.query;
+          const posts = await Post.find()
+            .populate("reviews.userId")
+            .populate("wishList")
+            .limit(limit * 1)
+            .skip((page - 1) * limit);
+          res.send(posts);
+        } catch (error) {
+          console.error(error);
+        }
+      },
+    
 
 }
 

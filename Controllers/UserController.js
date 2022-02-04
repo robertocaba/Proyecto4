@@ -1,7 +1,8 @@
 const User = require("../models/User");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const {jwt_secret} = require('../config/keys')
+const {jwt_secret} = require('../config/keys');
+const Post = require("../models/Post");
 
 const UserController = {
     async register(req, res) {
@@ -108,6 +109,42 @@ const UserController = {
           console.error(error);
         }
       },
+      async register(req, res) {
+        try {
+          let user = await User.findOne({
+            email: req.body.email,
+          });
+          if (user) return res.status(400).send("Este correo ya esta registrado");
+          user = await User.create(req.body);
+          res.status(201).send({ message: "Usuario registrado con exito", user });
+        } catch (error) {
+          console.error(error)
+          if (error.name == "ValidationError") {
+            let errName = await Object.keys(error.errors)[0]
+            res.status(400).send(error.errors[errName].message);
+          }
+          res.status(500).send(error);
+        }
+      },
+      async like(req, res) {
+        try {
+          const post = await Post.findByIdAndUpdate(
+            req.params._id,
+            { $push: { wishList: req.user._id } },
+            { new: true }
+          );
+          await User.findByIdAndUpdate(
+            req.user._id,
+            { $push: { wishList: req.params._id } },
+            { new: true }
+          );
+          res.send(post);
+        } catch (error) {
+          console.error(error);
+          res.status(500).send({ message: "There was a problem with your like" });
+        }
+      },
+    
     
 }
 

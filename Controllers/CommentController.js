@@ -23,6 +23,23 @@ const CommentController = {
           console.error(error);
         }
       },
+    async getInfo(req, res) {
+        try {
+          const user = await User.findById(req.user._id)
+            .populate("commentIds")
+            .populate({
+              path: "commentIds",
+              populate: {
+                path: "commentIds._id",
+              },
+            })
+            .populate("wishList");
+          res.send(user);
+        } catch (error) {
+          console.error(error);
+        }
+      },
+    
 }
 
 module.exports = CommentController;
